@@ -4,6 +4,8 @@ const fs = require('fs');
 const packageFile = require("./package.json");
 const moment = require('moment');
 var logger = require("mcuiot-logger").logger;
+var os = require("os");
+var hostname = os.hostname();
 
 module.exports = function(homebridge) {
     if(!isConfig(homebridge.user.configPath(), "accessories", "RaspberryPiTemperature")) {
@@ -72,11 +74,10 @@ RaspberryPiTemperature.prototype = {
         infoService
             .setCharacteristic(Characteristic.Manufacturer, "RaspberryPi")
             .setCharacteristic(Characteristic.Model, "3B")
-            .setCharacteristic(Characteristic.SerialNumber, "CPU")
+            .setCharacteristic(Characteristic.SerialNumber, hostname + "-" + "CPU Temp")
             .setCharacteristic(Characteristic.FirmwareRevision, packageFile.version);
         
         var raspberrypiService = new Service.TemperatureSensor(that.name);
-        raspberrypiService.setCharacteristic(Characteristic.SerialNumber, Characteristic.Manufacturer + "-" + this.deviceID);
         that.loggingService = new FakeGatoHistoryService("weather", raspberrypiService); 
 
         var currentTemperatureCharacteristic = raspberrypiService.getCharacteristic(Characteristic.CurrentTemperature);
