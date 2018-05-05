@@ -80,7 +80,7 @@ RaspberryPiTemperature.prototype = {
             that.log.debug("update currentTemperatureCharacteristic value: " + temperatureVal);
              loggingService.addEntry({
                 time: moment().unix(),
-                temp: roundInt(temperatureVal),
+                temp: temperatureVal,
                 pressure: 0,
                 humidity: 0
           });
