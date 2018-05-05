@@ -15,7 +15,6 @@ module.exports = function(homebridge) {
     Accessory = homebridge.platformAccessory;
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
-    UUIDGen = homebridge.hap.uuid;
     FakeGatoHistoryService = require('fakegato-history')(homebridge);
     homebridge.registerAccessory('homebridge-raspberrypi-temperature', 'RaspberryPiTemperature', RaspberryPiTemperature);
 }
