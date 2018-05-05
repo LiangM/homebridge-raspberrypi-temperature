@@ -78,7 +78,7 @@ RaspberryPiTemperature.prototype = {
             var data = fs.readFileSync(that.readFile, "utf-8");
             var temperatureVal = parseFloat(data) / 1000;
             that.log.debug("update currentTemperatureCharacteristic value: " + temperatureVal);
-             loggingService.addEntry({
+             that.loggingService.addEntry({
                 time: moment().unix(),
                 temp: temperatureVal,
                 pressure: 0,
@@ -97,7 +97,7 @@ RaspberryPiTemperature.prototype = {
             callback(null, getCurrentTemperature());
         });
         
-        return [infoService, raspberrypiService];
+        return [infoService, raspberrypiService,loggingService];
     }
 }
 
