@@ -71,7 +71,7 @@ RaspberryPiTemperature.prototype = {
             .setCharacteristic(Characteristic.FirmwareRevision, packageFile.version);
         
         var raspberrypiService = new Service.TemperatureSensor(that.name);
-        var loggingService = new FakeGatoHistoryService("weather", raspberrypiService,{storage: 'fs'});
+        var loggingService = new FakeGatoHistoryService("weather", raspberrypiService,{storage: 'googleDrive'});
         
         var currentTemperatureCharacteristic = raspberrypiService.getCharacteristic(Characteristic.CurrentTemperature);
         function getCurrentTemperature() {
