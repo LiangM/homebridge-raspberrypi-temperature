@@ -91,10 +91,11 @@ RaspberryPiTemperature.prototype = {
                 humidity: 0
           });
             if (that.spreadsheetId) {
-            this.log_event_counter = this.log_event_counter + 1;
-            if (this.log_event_counter > 59) {
-              this.logger.storeBME(this.name, 0, temperatureVal, 0, 0);
-              this.log_event_counter = 0;
+            that.log_event_counter = that.log_event_counter + 1;
+            if (that.log_event_counter > 59) {
+              that.logger.storeBME(that.name, 0, temperatureVal, 0, 0);
+              that.log(that.name||' '||temperatureVal);
+              that.log_event_counter = 0;
             }
           }
             return temperatureVal;
