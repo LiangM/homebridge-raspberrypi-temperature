@@ -64,6 +64,7 @@ function RaspberryPiTemperature(log, config) {
       this.log_event_counter = 59;
       this.logger = new logger(this.spreadsheetId);
     }
+    this.loggingService = new FakeGatoHistoryService("weather", this); 
 }
 
 RaspberryPiTemperature.prototype = {
@@ -78,7 +79,6 @@ RaspberryPiTemperature.prototype = {
             .setCharacteristic(Characteristic.FirmwareRevision, packageFile.version);
         
         var raspberrypiService = new Service.TemperatureSensor(that.name);
-        that.loggingService = new FakeGatoHistoryService("weather", raspberrypiService); 
 
         var currentTemperatureCharacteristic = raspberrypiService.getCharacteristic(Characteristic.CurrentTemperature);
         function getCurrentTemperature() {
