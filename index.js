@@ -65,6 +65,7 @@ function RaspberryPiTemperature(log, config) {
       this.logger = new logger(this.spreadsheetId);
     }
     this.loggingService = new FakeGatoHistoryService("weather", this); 
+    this.log("loggingService: "+loggingService);
 }
 
 RaspberryPiTemperature.prototype = {
@@ -77,9 +78,9 @@ RaspberryPiTemperature.prototype = {
             .setCharacteristic(Characteristic.Model, "3B")
             .setCharacteristic(Characteristic.SerialNumber, hostname + "-" + "CPU Temp")
             .setCharacteristic(Characteristic.FirmwareRevision, packageFile.version);
-        
+        that.log("infoService: "+infoService);
         var raspberrypiService = new Service.TemperatureSensor(that.name);
-
+        that.log("raspberrypiService: "+raspberrypiService);
         var currentTemperatureCharacteristic = raspberrypiService.getCharacteristic(Characteristic.CurrentTemperature);
         function getCurrentTemperature() {
             var data = fs.readFileSync(that.readFile, "utf-8");
@@ -111,7 +112,7 @@ RaspberryPiTemperature.prototype = {
             callback(null, getCurrentTemperature());
         });
         
-        return [infoService, raspberrypiService,loggingService];
+        return [infoService, raspberrypiService,this.loggingService];
     }
 }
 
