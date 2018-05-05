@@ -72,10 +72,11 @@ RaspberryPiTemperature.prototype = {
         infoService
             .setCharacteristic(Characteristic.Manufacturer, "RaspberryPi")
             .setCharacteristic(Characteristic.Model, "3B")
-            .setCharacteristic(Characteristic.SerialNumber, "Undefined")
+            .setCharacteristic(Characteristic.SerialNumber, "CPU")
             .setCharacteristic(Characteristic.FirmwareRevision, packageFile.version);
         
         var raspberrypiService = new Service.TemperatureSensor(that.name);
+        raspberrypiService.setCharacteristic(Characteristic.SerialNumber, hostname + "-" + this.deviceID);
         that.loggingService = new FakeGatoHistoryService("weather", raspberrypiService); 
 
         var currentTemperatureCharacteristic = raspberrypiService.getCharacteristic(Characteristic.CurrentTemperature);
