@@ -3,6 +3,7 @@ var Accessory, Service, Characteristic, UUIDGen, FakeGatoHistoryService;
 const fs = require('fs');
 const packageFile = require("./package.json");
 const moment = require('moment');
+var logger = require("mcuiot-logger").logger;
 
 module.exports = function(homebridge) {
     if(!isConfig(homebridge.user.configPath(), "accessories", "RaspberryPiTemperature")) {
@@ -56,6 +57,11 @@ function RaspberryPiTemperature(log, config) {
     } else {
         this.updateInterval = null;
     }
+    this.spreadsheetId = config['spreadsheetId'];
+    if (this.spreadsheetId) {
+      this.log_event_counter = 59;
+      this.logger = new logger(this.spreadsheetId);
+    }
   
 }
 
@@ -84,7 +90,13 @@ RaspberryPiTemperature.prototype = {
                 pressure: 0,
                 humidity: 0
           });
-            
+            if (that.spreadsheetId) {
+            this.log_event_counter = this.log_event_counter + 1;
+            if (this.log_event_counter > 59) {
+              this.logger.storeBME(this.name, 0, temperatureVal, 0, 0);
+              this.log_event_counter = 0;
+            }
+          }
             return temperatureVal;
         }
         currentTemperatureCharacteristic.updateValue(getCurrentTemperature());
