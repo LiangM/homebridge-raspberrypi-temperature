@@ -11,7 +11,8 @@ module.exports = function(homebridge) {
     if(!isConfig(homebridge.user.configPath(), "accessories", "RaspberryPiTemperature")) {
         return;
     }
-    
+    Service = homebridge.hap.Service;
+    UUIDGen = homebridge.hap.uuid;
     Accessory = homebridge.platformAccessory;
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
