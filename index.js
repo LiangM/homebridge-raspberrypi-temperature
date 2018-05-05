@@ -1,4 +1,4 @@
-var Accessory, Service, Characteristic, UUIDGen;
+var Accessory, Service, Characteristic, UUIDGen, FakeGatoHistoryService;
 
 const fs = require('fs');
 const packageFile = require("./package.json");
@@ -12,7 +12,7 @@ module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
     UUIDGen = homebridge.hap.uuid;
-
+    FakeGatoHistoryService = require('fakegato-history')(homebridge);
     homebridge.registerAccessory('homebridge-raspberrypi-temperature', 'RaspberryPiTemperature', RaspberryPiTemperature);
 }
 
@@ -70,11 +70,20 @@ RaspberryPiTemperature.prototype = {
             .setCharacteristic(Characteristic.FirmwareRevision, packageFile.version);
         
         var raspberrypiService = new Service.TemperatureSensor(that.name);
+        var loggingService = new FakeGatoHistoryService("weather", raspberrypiService);
+        
         var currentTemperatureCharacteristic = raspberrypiService.getCharacteristic(Characteristic.CurrentTemperature);
         function getCurrentTemperature() {
             var data = fs.readFileSync(that.readFile, "utf-8");
             var temperatureVal = parseFloat(data) / 1000;
             that.log.debug("update currentTemperatureCharacteristic value: " + temperatureVal);
+             this.loggingService.addEntry({
+                time: moment().unix(),
+                temp: roundInt(temperatureVal),
+                pressure: 0,
+                humidity: 0
+          });
+            
             return temperatureVal;
         }
         currentTemperatureCharacteristic.updateValue(getCurrentTemperature());
