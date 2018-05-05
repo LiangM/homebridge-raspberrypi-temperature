@@ -23,6 +23,7 @@
   },
     "dependencies": {
     "moment": "^2.18.1",
-    "fakegato-history": "^0.5.1"
+    "fakegato-history": "^0.5.1",
+    "mcuiot-logger": "^0.0.7"
   }
 }
