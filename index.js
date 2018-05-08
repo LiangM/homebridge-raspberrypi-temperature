@@ -1,4 +1,4 @@
-var Accessory, Service, Characteristic, UUIDGen, FakeGatoHistoryService;
+var Accessory, Service, Characteristic, UUIDGen, FakeGatoHistoryService,loggingService;
 
 const fs = require('fs');
 const packageFile = require("./package.json");
@@ -63,7 +63,8 @@ function RaspberryPiTemperature(log, config) {
     if (this.spreadsheetId) {
       this.log_event_counter = 59;
       this.logger = new logger(this.spreadsheetId);
-    }    
+    }
+    this.loggingService = new FakeGatoHistoryService("weather", this); 
 }
 
 RaspberryPiTemperature.prototype = {
@@ -78,17 +79,13 @@ RaspberryPiTemperature.prototype = {
             .setCharacteristic(Characteristic.FirmwareRevision, packageFile.version);
         that.log("infoService: "+infoService);
         var raspberrypiService = new Service.TemperatureSensor(that.name);
-        
+        that.log("raspberrypiService: "+raspberrypiService);
         var currentTemperatureCharacteristic = raspberrypiService.getCharacteristic(Characteristic.CurrentTemperature);
-        
-        
-        var loggingService = new FakeGatoHistoryService("weather", this); 
-
         function getCurrentTemperature() {
             var data = fs.readFileSync(that.readFile, "utf-8");
             var temperatureVal = parseFloat(data) / 1000;
             that.log.debug("update currentTemperatureCharacteristic value: " + temperatureVal);
-            loggingService.addEntry({
+            that.loggingService.addEntry({
                 time: moment().unix(),
                 temp: temperatureVal,
                 pressure: 0,
@@ -117,4 +114,3 @@ RaspberryPiTemperature.prototype = {
         return [infoService, raspberrypiService,this.loggingService];
     }
 }
-
