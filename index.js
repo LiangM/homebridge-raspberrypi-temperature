@@ -1,4 +1,4 @@
-var Accessory, Service, Characteristic, UUIDGen, FakeGatoHistoryService,loggingService;
+var Accessory, Service, Characteristic, UUIDGen;
 
 const fs = require('fs');
 const packageFile = require("./package.json");
@@ -16,7 +16,7 @@ module.exports = function(homebridge) {
     Accessory = homebridge.platformAccessory;
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
-    FakeGatoHistoryService = require('fakegato-history')(homebridge);
+   // FakeGatoHistoryService = require('fakegato-history')(homebridge);
     homebridge.registerAccessory('homebridge-raspberrypi-temperature', 'RaspberryPiTemperature', RaspberryPiTemperature);
 }
 
@@ -64,7 +64,7 @@ function RaspberryPiTemperature(log, config) {
       this.log_event_counter = 59;
       this.logger = new logger(this.spreadsheetId);
     }
-    this.loggingService = new FakeGatoHistoryService("weather", this); 
+  //  this.loggingService = new FakeGatoHistoryService("weather", this); 
 }
 
 RaspberryPiTemperature.prototype = {
@@ -85,12 +85,13 @@ RaspberryPiTemperature.prototype = {
             var data = fs.readFileSync(that.readFile, "utf-8");
             var temperatureVal = parseFloat(data) / 1000;
             that.log.debug("update currentTemperatureCharacteristic value: " + temperatureVal);
-            that.loggingService.addEntry({
+        /*    that.loggingService.addEntry({
                 time: moment().unix(),
                 temp: temperatureVal,
                 pressure: 0,
                 humidity: 0
           });
+          */
             if (that.spreadsheetId) {
             that.log_event_counter = that.log_event_counter + 1;
             if (that.log_event_counter > 59) {
@@ -111,6 +112,6 @@ RaspberryPiTemperature.prototype = {
             callback(null, getCurrentTemperature());
         });
         
-        return [infoService, raspberrypiService,this.loggingService];
+        return [infoService, raspberrypiService];
     }
 }
